@@ -1,0 +1,17 @@
+# python-seed
+
+---
+
+## About
+python 3.8 + starlette + uvicorn + yapf + poetry + graphql
+
+### Installation
+1. Install poetry (https://python-poetry.org/docs/)
+2. 
+2. Install modules and start on your localhost
+
+    Go to the project root where you can find the `pyproject.toml`
+    ```
+    poetry install && ./run.sh
+    ```
+    static http server should start at `localhost:8000`
