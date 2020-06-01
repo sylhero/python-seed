@@ -1,5 +1,5 @@
-from starlette.applications import Starlette
-from starlette.middleware import Middleware
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware import Middleware
+from fastapi.middleware.cors import CORSMiddleware
 
-middleware = [Middleware(CORSMiddleware, allow_origins=["*"])]
+
+middlewares = [Middleware(CORSMiddleware, allow_origins=["*"])]

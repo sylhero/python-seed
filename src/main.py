@@ -1,24 +1,32 @@
-from graphql.execution.executors.asyncio import AsyncioExecutor
-from starlette.applications import Starlette
-from starlette.graphql import GraphQLApp
-from starlette.routing import Route
-import graphene
+from fastapi import FastAPI
+import asyncio
+from fastapi.middleware.cors import CORSMiddleware
+from . import users
+from . import items
+from .db import DBInstance
+from configparser import ConfigParser
+# from ConfigParser import ConfigParser # for python3
+data_file = 'config.ini'
+
+config = ConfigParser()
+config.read(data_file)
+
+print(config["db"]["host"])
+app = FastAPI()
+# global instance
+db = DBInstance.get_db_instance()
+app.add_middleware(CORSMiddleware, allow_methods=["*"], allow_headers=["*"])
 
 
-class Query(graphene.ObjectType):
-    hello = graphene.String(name=graphene.String(default_value="stranger"))
+@app.on_event("startup")
+async def startup():
+    app.include_router(users.__init__())
+    app.include_router(items.__init__())
+    await db.set_bind(
+        "postgresql://postgres:mysecretpassword@localhost:5432/auth")
+    await db.gino.create_all()
 
-    async def resolve_hello(self, info, name):
-        # We can make asynchronous network calls here.
-        return "Hello " + name
 
-
-routes = [
-    # We're using `executor_class=AsyncioExecutor` here.
-    Route(
-        "/",
-        GraphQLApp(schema=graphene.Schema(query=Query), executor_class=AsyncioExecutor),
-    )
-]
-
-app = Starlette(routes=routes)
+@app.on_event("shutdown")
+async def shutdown():
+    await db.pop_bind().close()

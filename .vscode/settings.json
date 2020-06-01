@@ -1,4 +1,5 @@
 {
-    "python.formatting.provider": "black",
-    "python.linting.pylintEnabled": true
+    "python.formatting.provider": "yapf",
+    "python.linting.pylintEnabled": true,
+    "python.pythonPath": "/Users/yulongsong/workspace/python-seed/.venv/bin/python3"
 }
